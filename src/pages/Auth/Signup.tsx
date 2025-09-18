@@ -8,6 +8,7 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import logo from "../../assets/logo.png";
+import { signupUser } from "../../services/api";
 
 function getPasswordStrength(password: string) {
   let score = 0;
@@ -24,9 +25,38 @@ function getPasswordStrength(password: string) {
 export default function Signup() {
   const [showPwd, setShowPwd] = useState(false);
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [confirmPwd, setConfirmPwd] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const togglePwd = () => setShowPwd((s) => !s);
 
   const strength = getPasswordStrength(password);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiError(null);
+    setSuccess(null);
+
+    if (password !== confirmPwd) {
+      setApiError("Passwords do not match");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // This will show in the Network tab
+      const res = await signupUser({ name, email, password });
+      setSuccess(`Welcome, ${res.name}!`);
+    } catch (err: any) {
+      setApiError(err.message || "Signup failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -50,13 +80,13 @@ export default function Signup() {
         <Stack spacing={0} alignItems="center" mb={2}>
           <Box
             sx={{
-              width: 80, // smaller logo
-              height: 80,
+              width: 70,
+              height: 70,
               borderRadius: 2,
               display: "grid",
               placeItems: "center",
               overflow: "hidden",
-              mb: 0.1 // small margin below logo
+              mb: 0.5
             }}
           >
             <img src={logo} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -69,18 +99,24 @@ export default function Signup() {
           </Typography>
         </Stack>
 
-        <Stack spacing={2} component="form" onSubmit={(e) => e.preventDefault()}>
+        <Stack spacing={2} component="form" onSubmit={handleSubmit}>
           <TextField
             label="Full name"
             type="text"
             fullWidth
             autoComplete="name"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            required
           />
           <TextField
             label="Email"
             type="email"
             fullWidth
             autoComplete="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
           />
           <TextField
             label="Password"
@@ -89,6 +125,7 @@ export default function Signup() {
             autoComplete="new-password"
             value={password}
             onChange={e => setPassword(e.target.value)}
+            required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -116,6 +153,9 @@ export default function Signup() {
             type="password"
             fullWidth
             autoComplete="new-password"
+            value={confirmPwd}
+            onChange={e => setConfirmPwd(e.target.value)}
+            required
           />
 
           <FormControlLabel
@@ -123,14 +163,26 @@ export default function Signup() {
             label="I agree to the Terms & Privacy"
           />
 
+          {apiError && (
+            <Typography color="error" variant="body2" textAlign="center">
+              {apiError}
+            </Typography>
+          )}
+          {success && (
+            <Typography color="success.main" variant="body2" textAlign="center">
+              {success}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             variant="contained"
             size="large"
             startIcon={<PersonAddIcon />}
             sx={{ py: 1.2, borderRadius: 2 }}
+            disabled={loading}
           >
-            Create account
+            {loading ? "Creating..." : "Create account"}
           </Button>
 
           <Divider flexItem />

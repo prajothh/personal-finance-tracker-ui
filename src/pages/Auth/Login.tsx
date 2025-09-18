@@ -9,10 +9,34 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import LoginIcon from "@mui/icons-material/Login";
 import logo from "../../assets/logo.png";
+import { loginUser } from "../../services/api";
 
 export default function Login() {
   const [showPwd, setShowPwd] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
   const togglePwd = () => setShowPwd((s) => !s);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiError(null);
+    setSuccess(null);
+
+    setLoading(true);
+    try {
+      await loginUser({ email, password }); // removed 'const res ='
+      setSuccess("Login successful!");
+      // Optionally, save token: localStorage.setItem("token", res.access_token);
+    } catch (err: any) {
+      setApiError(err.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -37,10 +61,10 @@ export default function Login() {
         <Stack spacing={0} alignItems="center" mb={2}>
           <Box
             sx={{
-              width: 80, // smaller logo
-              height:80,
+              width: 80,
+              height: 80,
               overflow: "hidden",
-              mb: 0.1 // small margin below logo
+              mb: 0.1
             }}
           >
             <img src={logo} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -57,13 +81,16 @@ export default function Login() {
           </Typography>
         </Stack>
 
-        <Stack spacing={2} component="form" onSubmit={(e) => e.preventDefault()}>
+        <Stack spacing={2} component="form" onSubmit={handleSubmit}>
           <TextField
             label="Email"
             type="email"
             fullWidth
             autoComplete="email"
             placeholder="you@example.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
           />
 
           <TextField
@@ -72,6 +99,9 @@ export default function Login() {
             fullWidth
             autoComplete="current-password"
             placeholder="••••••••"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -88,14 +118,26 @@ export default function Login() {
             <Link href="#" underline="hover">Forgot password?</Link>
           </Stack>
 
+          {apiError && (
+            <Typography color="error" variant="body2" textAlign="center">
+              {apiError}
+            </Typography>
+          )}
+          {success && (
+            <Typography color="success.main" variant="body2" textAlign="center">
+              {success}
+            </Typography>
+          )}
+
           <Button
             type="submit"
             variant="contained"
             size="large"
             startIcon={<LoginIcon />}
             sx={{ py: 1.2, borderRadius: 2 }}
+            disabled={loading}
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </Button>
 
           <Divider flexItem />
