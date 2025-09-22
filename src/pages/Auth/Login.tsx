@@ -1,5 +1,6 @@
 // src/pages/Auth/Login.tsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Paper, Stack, TextField, Button, Typography,
   FormControlLabel, Checkbox, InputAdornment, IconButton, Link, Divider,
@@ -18,6 +19,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const togglePwd = () => setShowPwd((s) => !s);
 
@@ -28,9 +30,12 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await loginUser({ email, password }); // removed 'const res ='
+      const res = await loginUser({ email, password });
+      localStorage.setItem("token", res.access_token); // <-- Save token here
       setSuccess("Login successful!");
-      // Optionally, save token: localStorage.setItem("token", res.access_token);
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 500);
     } catch (err: any) {
       setApiError(err.message || "Login failed");
     } finally {

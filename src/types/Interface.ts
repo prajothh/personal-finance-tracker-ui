@@ -20,3 +20,20 @@ export interface LoginResponse {
   access_token: string;
   token_type: string;
 }
+
+export interface AddTransactionRequest {
+  amount: number;
+  category: string;
+  type: string;
+  notes: string;
+  transaction_date: string;
+}
+
+export interface AddTransactionResponse {
+  transaction_id: number;
+  amount: number;
+  category: string;
+  type: string;
+  notes: string;
+  transaction_date: string;
+}

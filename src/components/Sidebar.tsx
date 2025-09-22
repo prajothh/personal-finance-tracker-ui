@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const WIDTH = 260;
 const items = [
-  { to: "/", label: "Dashboard", icon: <DashboardIcon /> },
+  { to: "/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
   { to: "/transactions", label: "Transactions", icon: <ReceiptLongIcon /> },
   { to: "/transactions/add", label: "Add Transaction", icon: <AddIcon /> },
   { to: "/goals", label: "Savings Goals", icon: <FlagIcon /> },
@@ -24,8 +24,14 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
       <Toolbar />
       <List>
         {items.map(it => (
-          <ListItemButton key={it.to} selected={pathname === it.to}
-            onClick={() => { nav(it.to); onClose(); }}>
+          <ListItemButton
+            key={it.to}
+            selected={
+              pathname === it.to ||
+              (it.to === "/transactions" && pathname.startsWith("/transactions"))
+            }
+            onClick={() => { nav(it.to); onClose(); }}
+          >
             <ListItemIcon>{it.icon}</ListItemIcon>
             <ListItemText primary={it.label} />
           </ListItemButton>

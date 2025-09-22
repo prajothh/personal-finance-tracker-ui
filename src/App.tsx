@@ -40,6 +40,9 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import AuthLayout from "./layouts/AuthLayout";
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import AddTransaction from "./pages/Transactions/AddTransaction";
+import TransactionsList from "./pages/Transactions/TransactionsList";
 
 export default function App() {
   return (
@@ -48,6 +51,11 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Route>
+
+      {/* Main Layout Routes */}
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/transactions" element={<TransactionsList />} />
+      <Route path="/transactions/add" element={<AddTransaction />} />
 
       {/* default & unknown -> /login */}
       <Route path="/" element={<Navigate to="/login" replace />} />
