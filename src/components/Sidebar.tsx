@@ -11,7 +11,7 @@ const items = [
   { to: "/dashboard", label: "Dashboard", icon: <DashboardIcon /> },
   { to: "/transactions", label: "Transactions", icon: <ReceiptLongIcon /> },
   { to: "/transactions/add", label: "Add Transaction", icon: <AddIcon /> },
-  { to: "/goals", label: "Savings Goals", icon: <FlagIcon /> },
+  { to: "/goals", label: "Goals", icon: <FlagIcon /> },
   { to: "/reports", label: "Reports", icon: <AssessmentIcon /> },
 ];
 

@@ -19,6 +19,8 @@ export interface LoginRequest {
 export interface LoginResponse {
   access_token: string;
   token_type: string;
+  name?: string;   // <-- add this
+  email?: string;
 }
 
 export interface AddTransactionRequest {
@@ -36,4 +38,18 @@ export interface AddTransactionResponse {
   type: string;
   notes: string;
   transaction_date: string;
+}
+
+export interface GoalRequest {
+  target_amount: number;
+  target_date: string;
+  notes?: string;
+}
+
+export interface GoalResponse {
+  goal_id: number;
+  target_amount: number;
+  target_date: string;
+  notes?: string;
+  progress: number;
 }

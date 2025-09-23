@@ -1,5 +1,5 @@
 // src/pages/Auth/Login.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Paper, Stack, TextField, Button, Typography,
@@ -21,6 +21,14 @@ export default function Login() {
   const [success, setSuccess] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // FIX: Redirect to dashboard if already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate]);
+
   const togglePwd = () => setShowPwd((s) => !s);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,9 +40,12 @@ export default function Login() {
     try {
       const res = await loginUser({ email, password });
       localStorage.setItem("token", res.access_token); // <-- Save token here
+      // Add these lines if your API returns user info:
+      localStorage.setItem("user_name", res.name || "User");
+      localStorage.setItem("user_email", res.email || email);
       setSuccess("Login successful!");
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/dashboard", { replace: true }); // <-- replace:true वापरा!
       }, 500);
     } catch (err: any) {
       setApiError(err.message || "Login failed");
@@ -50,7 +61,7 @@ export default function Login() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "#f5f7fa", // matches your index.css
+        bgcolor: "#f5f7fa",
       }}
     >
       <Paper

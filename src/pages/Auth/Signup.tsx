@@ -9,6 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import logo from "../../assets/logo.png";
 import { signupUser } from "../../services/api";
+import { useNavigate } from "react-router-dom";
 
 function getPasswordStrength(password: string) {
   let score = 0;
@@ -31,6 +32,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const togglePwd = () => setShowPwd((s) => !s);
 
@@ -51,6 +53,7 @@ export default function Signup() {
       // This will show in the Network tab
       const res = await signupUser({ name, email, password });
       setSuccess(`Welcome, ${res.name}!`);
+      navigate("/login", { replace: true });
     } catch (err: any) {
       setApiError(err.message || "Signup failed");
     } finally {

@@ -1,5 +1,6 @@
 import type { SignupRequest, SignupResponse, LoginRequest, LoginResponse, AddTransactionRequest} from "../types/Interface";
 import type { AddTransactionResponse } from "../types/Interface";
+import type { GoalRequest, GoalResponse } from "../types/Interface";
 
 
 export async function signupUser(data: SignupRequest): Promise<SignupResponse> {
@@ -83,5 +84,30 @@ export async function getTransactionsByDate(accessToken: string, date: string): 
     throw new Error("Failed to fetch transactions by date");
   }
 
+  return response.json();
+}
+
+export async function getGoals(accessToken: string): Promise<GoalResponse[]> {
+  const response = await fetch("http://localhost:8000/goals", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    }
+  });
+  if (!response.ok) throw new Error("Failed to fetch goals");
+  return response.json();
+}
+
+export async function addGoal(data: GoalRequest, accessToken: string): Promise<GoalResponse> {
+  const response = await fetch("http://localhost:8000/goals", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(data)
+  });
+  if (!response.ok) throw new Error("Failed to add goal");
   return response.json();
 }
