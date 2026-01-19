@@ -8,11 +8,14 @@ import TransactionsList from "./pages/Transactions/TransactionsList";
 import Goals from "./pages/Goals/Goals";
 import Logout from "./pages/Auth/Logout";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import LandingPage from "./pages/Auth/landingpage";
 
 export default function App() {
   return (
     <Routes>
+      {/* Landing page is public and not wrapped in AuthLayout */}
+      <Route path="/" element={<LandingPage />} />
+
       {/* Public routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -28,9 +31,8 @@ export default function App() {
         <Route path="/logout" element={<Logout />} />
       </Route>
 
-      {/* default & unknown -> /login */}
-      <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      {/* unknown routes -> landing page */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

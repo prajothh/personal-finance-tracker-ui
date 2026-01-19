@@ -12,6 +12,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    open: "/login"  // auto-opens the login page
+    open: "/"  // auto-opens the login page
   }
 });
